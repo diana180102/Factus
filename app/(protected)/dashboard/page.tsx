@@ -1,9 +1,17 @@
 
+import DashboardLayaout from "@/components/layaout/DashboardLayaout";
+
+
 
 export default async function Dashboard(){
     return (
-        <>
-         <p>Hola bienvenido</p>
-        </>
+    <div className="container ">
+         
+         <DashboardLayaout>
+           <>
+           </>
+         </DashboardLayaout>
+         
+       </div>
     )
 }

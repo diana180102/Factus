@@ -51,7 +51,7 @@ function LoginForm() {
         if(session){
             router.push("/dashboard")
         }
-    })
+    },[session, router])
     
     return ( 
         <section className="bg-gray-50 dark:bg-gray-900">
