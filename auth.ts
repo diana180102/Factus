@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Session } from "next-auth";
-import type { NextAuthOptions } from "next-auth";
+import type { NextAuthOptions, User } from "next-auth";
 import { getServerSession } from "next-auth/next";
 
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -9,28 +9,32 @@ import axios from "axios";
 import type { AxiosError } from 'axios';
 import qs from "qs";
 import type { JWT } from "next-auth/jwt";
+import { setCookie, destroyCookie } from 'nookies';
+
 
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
-      name: "Credentials",
+      name: "credentials",
       credentials: {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
 
-      async authorize(credentials, _req) {
+      async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
           throw new Error("Email y contraseña son requeridos");
         }
 
+
         try {
+           
           const response = await axios.post(
             "https://api-sandbox.factus.com.co/oauth/token",
             qs.stringify({
               grant_type: "password",
-              client_id: process.env.CLIENT_ID,
-              client_secret: process.env.CLIENT_SECRET,
+              client_id: process.env.NEXT_PUBLIC_CLIENT_ID,
+              client_secret: process.env.NEXT_PUBLIC_CLIENT_SECRET,
               username: credentials.email,
               password: credentials.password,
             }),
@@ -42,20 +46,36 @@ export const authOptions: NextAuthOptions = {
             }
           );
 
-          const { access_token, refresh_token } = response.data as {
+          // console.log(response.data)
+          // console.log(credentials)
+
+          const { access_token, refresh_token, expires_in } = response.data as {
             access_token: string;
             refresh_token: string;
+            expires_in: number;
           };
 
-          if (access_token && refresh_token) {
+          if(access_token){
+            //Almacena el token en una cookie
+            setCookie(null, 'accessToken', access_token, {
+              maxAge: expires_in,
+              path: '/'
+            });
+
+            setCookie(null, 'refreshToken', refresh_token, {
+              maxAge: expires_in, 
+              path: '/',
+            });
+
             return {
-              id: credentials?.email,
-              name: credentials?.email,
-              email: credentials?.email,
-              accessToken: access_token,
-              refreshToken: refresh_token,
-            };
-          }
+              id: credentials.email, 
+              access_token, 
+              refresh_token, 
+              email:credentials.email
+            } as CustomUser;
+         }
+
+          // console.log(access_token)
 
           return null;
         } catch (error) {
@@ -73,23 +93,27 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
 
-  session: {
-    strategy: "jwt",
-  },
+
 
   callbacks: {
-    async jwt({ token, account }: { token: JWT; account?: User }) {
-      if (account) {
-        token.accessToken = account.accessToken;
-        token.refreshToken = account.refreshToken;
+    async jwt({ token, account, user }){
+       const users = user as unknown as CustomUser;
+
+      if (user) {
+        // console.log("account", account)
+        console.log(user)
+         token.accessToken = users.access_token;
+        token.refreshToken = users.refresh_token;
         
       }
       return token;
     },
 
     async session({ session, token }: { session: Session; token: JWT }) {
+      // console.log("token", token)
       session.accessToken = token.accessToken as string;
       session.refreshToken = token.refreshToken as string;
+     
       return session;
     },
   },
@@ -106,7 +130,9 @@ export async function auth() {
 }
 
 
-interface User {
-  accessToken: string;
-  refreshToken: string;
+
+interface CustomUser extends User {
+  access_token: string;
+  refresh_token: string;
+  email: string;
 }

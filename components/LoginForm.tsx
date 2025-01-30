@@ -2,17 +2,17 @@
 import { poppins } from "@/ui/font";
 import Input from "./Input";
 import Label from "./Label";
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import { signIn, useSession } from "next-auth/react";
+import { ChangeEvent, FormEvent, useState } from "react";
+import { signIn} from "next-auth/react";
 
 import { useRouter } from "next/navigation";
 
 function LoginForm() {
 
-    const {data: session} = useSession();
+  
     const router =  useRouter();
 
-    console.log(session)
+    
 
 
     const [formData, setFormData] = useState({
@@ -29,29 +29,34 @@ function LoginForm() {
     }));
   } 
     
-   const handleSubmit = async (e:FormEvent<HTMLFormElement>) => {
-      e.preventDefault()
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log("Formulario enviado");
 
-      try {
-        const result = await signIn("Credentials",{
-            email:formData.email,
-            password: formData.password,
-            redirect: false
-        });
+    try {
+      const result = await signIn("credentials", {
+        email: formData.email,
+        password: formData.password,
+        redirect: false
+      });
 
-        if(result?.error){
-            throw new Error (result.error);
-        }
-      } catch (error) {
-         console.error(error);
+      console.log("Resultado de signIn:", result);
+
+      if (result?.error) {
+        throw new Error(result.error);
       }
-    }
 
-    useEffect(() =>{
-        if(session){
-            router.push("/dashboard")
-        }
-    },[session, router])
+      if (result?.ok) {
+        router.push("/dashboard");
+      } else {
+        console.log("Autenticación fallida");
+      }
+    } catch (error) {
+      console.error("Error en la autenticación:", error);
+    }
+  };
+
+    
     
     return ( 
         <section className="bg-gray-50 dark:bg-gray-900">

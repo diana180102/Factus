@@ -1,53 +1,326 @@
+import { poppins } from "@/ui/font";
+import Input from "./Input";
+import Label from "./Label";
+import Select from "./Select";
 
-export default function InvoiceForm (){
-    return (
-<section className="">
-  <div className="max-w-2xl px-4 py-8 mx-auto lg:py-16">
-      <h2 className="mb-4 text-xl font-bold text-gray-900 dark:text-white">Update product</h2>
-      <form action="#">
-          <div className="grid gap-4 mb-4 sm:grid-cols-2 sm:gap-6 sm:mb-5">
-              <div className="sm:col-span-2">
-                  <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Product Name</label>
-                  <input type="text" name="name" id="name" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" value="Apple iMac 27&ldquo;" placeholder="Type product name" required />
+const options = [
+  { value: "react", label: "React" },
+  { value: "nextjs", label: "Next.js" },
+  { value: "vue", label: "Vue.js" },
+  { value: "angular", label: "Angular" },
+];
+
+export default function InvoiceForm() {
+  return (
+    <section className="">
+      <div className="max-w-3xl px-4 py-8 mx-auto lg:py-16">
+        <h1 className={`mb-8 text-2xl font-bold  ${poppins.className}`}>
+          Crear Factura
+        </h1>
+        <form action="#">
+          <div className="invoice mb-5 bg-[#e3e3f3] p-8 rounded-lg shadow-lg">
+            <h2
+              className={`mb-4 text-xl font-semibold text-gray-900 dark:text-white ${poppins.className}`}
+            >
+              Información de la Factura
+            </h2>
+
+            <div className="flex flex-row w-full gap-4 mb-4">
+              <div className="w-full">
+                <Label forHTML="TipoFacturas" styles="">
+                  Tipo de Factura
+                </Label>
+                <Select options={options}></Select>
               </div>
               <div className="w-full">
-                  <label htmlFor="brand" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Brand</label>
-                  <input type="text" name="brand" id="brand" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" value="Apple" placeholder="Product brand" required />
+                <Label forHTML="refFacturas" styles="">
+                  Código de Referencia
+                </Label>
+                <Input></Input>
+              </div>
+            </div>
+
+            <div className="w-full">
+              <Label forHTML="observaciones" styles="">
+                Observaciones
+              </Label>
+              <Input></Input>
+            </div>
+          </div>
+
+          <div className="customer mb-5 bg-[#e3e3f3] p-8 rounded-lg shadow-lg">
+            <h2
+              className={`mb-4 text-xl font-semibold text-gray-900 dark:text-white ${poppins.className}`}
+            >
+              Información de Cliente
+            </h2>
+            {/* Customer */}
+            <div className="flex flex-row   gap-4 mb-4  sm:gap-6 sm:mb-5">
+              <div className="w-full">
+                <Label forHTML="id" styles="">
+                  Tipo Identificación
+                </Label>
+                <Select options={options}></Select>
               </div>
               <div className="w-full">
-                  <label htmlFor="price" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Price</label>
-                  <input type="number" name="price" id="price" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" value="2999" placeholder="$299" required />
+                <Label forHTML="identy" styles="">
+                  Número de identificación
+                </Label>
+                <Input type="text"></Input>
+              </div>
+              <div className="w-full">
+                <Label forHTML="fullname" styles="">
+                  Nombres y Apellidos
+                </Label>
+                <Input type="text"></Input>
+              </div>
+            </div>
+
+            <div className="flex flex-row w-full  gap-4 mb-4  sm:gap-6 sm:mb-5">
+              <div className="w-full">
+                <Label forHTML="id" styles="">
+                  Tipo Persona
+                </Label>
+                <Select options={options}></Select>
+              </div>
+              <div className="w-full">
+                <Label forHTML="identy" styles="">
+                  Razón social
+                </Label>
+                <Input type="text"></Input>
+              </div>
+            </div>
+
+            <div className="flex flex-row w-full  gap-4 mb-4  sm:gap-6 sm:mb-5">
+              <div className="w-full">
+                <Label forHTML="identy" styles="">
+                  Email
+                </Label>
+                <Input type="text"></Input>
+              </div>
+              <div className="w-full">
+                <Label forHTML="identy" styles="">
+                  Telefono
+                </Label>
+                <Input type="text"></Input>
+              </div>
+              <div className="w-full">
+                <Label forHTML="id" styles="">
+                  Municipio
+                </Label>
+                <Select options={options}></Select>
+              </div>
+            </div>
+
+            <div className="flex flex-row w-full  gap-4 mb-4  sm:gap-6 sm:mb-5">
+              <div className="w-full">
+                <Label forHTML="tributo" styles="">
+                  Tributo
+                </Label>
+
+                <Select options={options}></Select>
+              </div>
+              <div className="w-full">
+                <Label forHTML="identy" styles="">
+                  Número de verificación de Cliente
+                </Label>
+                <Input type="text"></Input>
+              </div>
+            </div>
+          </div>
+
+          <div className="addItems bg-[#e3e3f3] p-8 rounded-lg shadow-lg mb-4">
+            <h2
+              className={`mb-4 text-xl font-semibold text-gray-900 dark:text-white ${poppins.className}`}
+            >
+              Productos
+            </h2>
+
+            <div className=" flex flex-row w-full gap-4 mb-4 ">
+              <div>
+                <Label forHTML="refProducto" styles="">
+                  Referencia del Producto
+                </Label>
+                <Input></Input>
               </div>
               <div>
-                  <label htmlFor="category" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Category</label>
-                  <select id="category" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                      <option selected={true}>Electronics</option>
-                      <option value="TV">TV/Monitors</option>
-                      <option value="PC">PC</option>
-                      <option value="GA">Gaming/Console</option>
-                      <option value="PH">Phones</option>
-                  </select>
+                <Label forHTML="nameProducto" styles="">
+                  Nombre del Producto
+                </Label>
+                <Input></Input>
               </div>
               <div>
-                  <label htmlFor="item-weight" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Item Weight (kg)</label>
-                  <input type="number" name="item-weight" id="item-weight" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" value="15" placeholder="Ex. 12" required />
-              </div> 
-              <div className="sm:col-span-2">
-                  <label htmlFor="description" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description</label>
-                  <textarea id="description"  className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Write a product description here...">Standard glass, 3.8GHz 8-core 10th-generation Intel Core i7 processor, Turbo Boost up to 5.0GHz, 16GB 2666MHz DDR4 memory, Radeon Pro 5500 XT with 8GB of GDDR6 memory, 256GB SSD storage, Gigabit Ethernet, Magic Mouse 2, Magic Keyboard - US</textarea>
+                <Label forHTML="cantidadProducto" styles="">
+                  Cantidad{" "}
+                </Label>
+                <Input></Input>
               </div>
+            </div>
+
+            <div className="flex flex-row w-full gap-4 mb-4 ">
+              <div>
+                <Label forHTML="descuentoProducto" styles="">
+                  Precio
+                </Label>
+                <Input></Input>
+              </div>
+              <div>
+                <Label forHTML="nameProducto" styles="">
+                  Descuento %
+                </Label>
+                <Input></Input>
+              </div>
+              <div>
+                <Label forHTML="cantidadProducto" styles="">
+                  Código Estándar
+                </Label>
+                <Input></Input>
+              </div>
+            </div>
+
+            <div className="flex flex-row w-full gap-4 mb-4">
+              <div className="w-full">
+                <Label forHTML="descuentoProducto" styles="">
+                  Unidad de Medida
+                </Label>
+                <Select options={options}></Select>
+              </div>
+              <div className="w-full">
+                <Label forHTML="nameProducto" styles="">
+                  Tributo
+                </Label>
+                <Input></Input>
+              </div>
+              <div className="w-full">
+                <Label forHTML="cantidadProducto" styles="">
+                  IVA(%)
+                </Label>
+                <Input></Input>
+              </div>
+            </div>
+
+            <div className="flex flex-row w-full gap-4 mb-4">
+              <div className="w-full">
+                <Label forHTML="retencion" styles="">
+                  {" "}
+                  ¿Aplica retención?
+                </Label>
+                <Select options={options}></Select>
+              </div>
+              <div className="w-full">
+                <Label forHTML="retencion" styles="">
+                  {" "}
+                  Tipo de retención
+                </Label>
+                <Select options={options}></Select>
+              </div>
+              <div className="w-full">
+                <Label forHTML="cantidadProducto" styles="">
+                  Retención(%)
+                </Label>
+                <Input></Input>
+              </div>
+            </div>
           </div>
-          <div className="flex items-center space-x-4">
-              <button type="submit" className="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
-                  Update product
-              </button>
-              <button type="button" className="text-red-600 inline-flex items-center hover:text-white border border-red-600 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900">
-                  <svg className="w-5 h-5 mr-1 -ml-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
-                  Delete
-              </button>
+
+          <div className="pago bg-[#e3e3f3] p-8 rounded-lg shadow-lg mb-4 ">
+            <h2
+              className={`mb-4 text-xl font-semibold text-gray-900 dark:text-white ${poppins.className}`}
+            >
+              Forma de Pago
+            </h2>
+
+            <div className=" flex flex-row w-full gap-4 mb-4 ">
+              <div className="w-full">
+                <Label forHTML="formaPago" styles="">
+                  Forma de Pago
+                </Label>
+                <Select options={options}></Select>
+              </div>
+              <div className="w-full">
+                <Label forHTML="metodoPago" styles="">
+                  Metodo de Pago
+                </Label>
+                <Select options={options}></Select>
+              </div>
+            </div>
           </div>
-      </form>
-  </div>
-</section>
-    )
+
+          <div className="ListProducts bg-[#e3e3f3] p-8 rounded-lg shadow-lg mb-4 ">
+                        <h2 className={`mb-4 text-xl font-semibold text-gray-900 dark:text-white ${poppins.className}`}>Lista de Productos</h2>
+
+
+
+                        <div className="relative overflow-x-auto rounded-md">
+                            <table className="w-full text-sm text-left  rtl:text-right text-gray-500 dark:text-gray-400">
+                                <thead className={`text-xs text-white uppercase bg-[#12093a] dark:bg-gray-700 dark:text-gray-400 ${poppins.className}`}>
+                                    <tr>
+                                        <th scope="col" className="px-6 py-3">
+                                            Producto
+                                        </th>
+                                        <th scope="col" className="px-6 py-3">
+                                            Cantidad
+                                        </th>
+                                        <th scope="col" className="px-6 py-3">
+                                            Precio
+                                        </th>
+                                        <th scope="col" className="px-6 py-3">
+                                            Descuento
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr className={`bg-[#edebf5] border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 ${poppins.className} text-[#0b063a]`}>
+                                        <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                            Apple MacBook Pro 17"
+                                        </th>
+                                        <td className="px-6 py-4">
+                                            Silver
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            Laptop
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            $2999
+                                        </td>
+                                    </tr>
+                                    <tr className={`bg-[#edebf5] border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 ${poppins.className} text-[#0b063a]`}>
+                                        <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                            Microsoft Surface Pro
+                                        </th>
+                                        <td className="px-6 py-4">
+                                            White
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            Laptop PC
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            $1999
+                                        </td>
+                                    </tr>
+                                    <tr className={`bg-[#edebf5] border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 ${poppins.className} text-[#0b063a]`}>
+                                        <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                            Magic Mouse 2
+                                        </th>
+                                        <td className="px-6 py-4">
+                                            Black
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            Accessories
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            $99
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+
+
+                    </div>
+        </form>
+      </div>
+    </section>
+  );
 }

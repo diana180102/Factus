@@ -11,7 +11,7 @@ function Input({type, ...delegated}: InputProps) {
        <input 
        type={type}
        
-       id="email" 
+       
        className={`input ${poppins.className} `} 
        {...delegated}
        />
