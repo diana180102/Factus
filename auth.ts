@@ -4,12 +4,11 @@ import type { NextAuthOptions, User } from "next-auth";
 import { getServerSession } from "next-auth/next";
 
 import CredentialsProvider from "next-auth/providers/credentials";
-import axios from "axios";
-
-import type { AxiosError } from 'axios';
+import axios, { AxiosError } from 'axios';
 import qs from "qs";
 import type { JWT } from "next-auth/jwt";
-import { setCookie, destroyCookie } from 'nookies';
+
+
 
 
 export const authOptions: NextAuthOptions = {
@@ -45,41 +44,25 @@ export const authOptions: NextAuthOptions = {
               },
             }
           );
-
-          // console.log(response.data)
-          // console.log(credentials)
-
-          const { access_token, refresh_token, expires_in } = response.data as {
-            access_token: string;
-            refresh_token: string;
-            expires_in: number;
-          };
+          
+          const {access_token, refresh_token} = response.data as {access_token: string, refresh_token:string};
 
           if(access_token){
-            //Almacena el token en una cookie
-            setCookie(null, 'accessToken', access_token, {
-              maxAge: expires_in,
-              path: '/'
-            });
-
-            setCookie(null, 'refreshToken', refresh_token, {
-              maxAge: expires_in, 
-              path: '/',
-            });
-
             return {
               id: credentials.email, 
-              access_token, 
+              access_token,
               refresh_token, 
               email:credentials.email
             } as CustomUser;
-         }
+          }
 
-          // console.log(access_token)
+
+          
+
 
           return null;
         } catch (error) {
-          if (error instanceof AxiosError) {
+          if (error instanceof axios.AxiosError) {
             console.error(
               "Error al autenticar: ",
               (error as AxiosError).response?.data || (error as AxiosError).message
@@ -103,7 +86,7 @@ export const authOptions: NextAuthOptions = {
         // console.log("account", account)
         console.log(user)
          token.accessToken = users.access_token;
-        token.refreshToken = users.refresh_token;
+         token.refreshToken = users.refresh_token;
         
       }
       return token;
@@ -133,6 +116,6 @@ export async function auth() {
 
 interface CustomUser extends User {
   access_token: string;
-  refresh_token: string;
+  refresh_token:string;
   email: string;
 }

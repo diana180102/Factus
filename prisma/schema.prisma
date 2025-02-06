@@ -71,7 +71,7 @@ model Medida{
 model Retencion {
   id Int @id @default(autoincrement())
   code String @db.VarChar(2)
-  name String @db.VarChar(3)
+  name String @db.VarChar(50)
   description String @db.VarChar(100)
 
   producto Productos[]
@@ -88,6 +88,7 @@ model Productos{
   standard_code_id Int
   is_excluded Int
   tribute_id Int
+  invoice_number String   @db.VarChar(50) 
   
   medida Medida @relation(fields: [unit_measure_id], references: [id] , onDelete: Cascade, onUpdate: Cascade)
   estandar Estandar @relation(fields: [standard_code_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
