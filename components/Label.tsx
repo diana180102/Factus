@@ -11,7 +11,7 @@ interface labelProps {
 function Label({forHTML, children, styles}: labelProps) {
     
     return ( 
-        <label htmlFor={forHTML} className={`block mb-2 text-sm font-normal ${poppins.className} ${styles} `}>{children}</label>
+        <label htmlFor={forHTML} className={`block mb-2 text-xs font-normal ${poppins.className} ${styles} `}>{children}</label>
      );
 
 }

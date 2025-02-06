@@ -14,6 +14,9 @@ importers:
       axios:
         specifier: ^1.7.9
         version: 1.7.9
+      cookies-next:
+        specifier: ^5.1.0
+        version: 5.1.0(next@15.1.5(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)
       dotenv:
         specifier: ^16.4.7
         version: 16.4.7
@@ -45,9 +48,6 @@ importers:
       '@types/node':
         specifier: ^20
         version: 20.17.16
-      '@types/nookies':
-        specifier: ^2.0.3
-        version: 2.0.3
       '@types/qs':
         specifier: ^6.9.18
         version: 6.9.18
@@ -398,10 +398,6 @@ packages:
   '@types/node@20.17.16':
     resolution: {integrity: sha512-vOTpLduLkZXePLxHiHsBLp98mHGnl8RptV4YAO3HfKO5UHjDvySGbxKtpYfy8Sx5+WKcgc45qNreJJRVM3L6mw==}
 
-  '@types/nookies@2.0.3':
-    resolution: {integrity: sha512-+PO/CKwVx7gDG5Pjr+UU/hL6/vFm1ppgW8cilV4AreLEpjbz0wiFvZ5Nld1VIRTr/RiB/KFmiyOzr8GboJfpqg==}
-    deprecated: This is a stub types definition. nookies provides its own type definitions, so you do not need this installed.
-
   '@types/qs@6.9.18':
     resolution: {integrity: sha512-kK7dgTYDyGqS+e2Q4aK9X3D7q234CIZ1Bv0q/7Z5IwRDoADNU81xXJK/YVyLbLTZCoIwUoDoffFeF+p/eIklAA==}
 
@@ -650,6 +646,16 @@ packages:
   cookie@0.7.2:
     resolution: {integrity: sha512-yki5XnKuf750l50uGTllt6kKILY4nQ1eNIQatoXEByZ5dWgnKqbnqmTrBE5B4N7lrMJKQ2ytWMiTO2o0v6Ew/w==}
     engines: {node: '>= 0.6'}
+
+  cookie@1.0.2:
+    resolution: {integrity: sha512-9Kr/j4O16ISv8zBBhJoi4bXOYNTkFLOqSL3UDB0njXxCXNezjeyVrJyGOWtgfs/q2km1gwBcfH8q1yEGoMYunA==}
+    engines: {node: '>=18'}
+
+  cookies-next@5.1.0:
+    resolution: {integrity: sha512-9Ekne+q8hfziJtnT9c1yDUBqT0eDMGgPrfPl4bpR3xwQHLTd/8gbSf6+IEkP/pjGsDZt1TGbC6emYmFYRbIXwQ==}
+    peerDependencies:
+      next: '>=15.0.0'
+      react: '>= 16.8.0'
 
   cross-spawn@7.0.6:
     resolution: {integrity: sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==}
@@ -2129,10 +2135,6 @@ snapshots:
     dependencies:
       undici-types: 6.19.8
 
-  '@types/nookies@2.0.3':
-    dependencies:
-      nookies: 2.5.2
-
   '@types/qs@6.9.18': {}
 
   '@types/react-dom@19.0.3(@types/react@19.0.8)':
@@ -2434,6 +2436,14 @@ snapshots:
   cookie@0.4.2: {}
 
   cookie@0.7.2: {}
+
+  cookie@1.0.2: {}
+
+  cookies-next@5.1.0(next@15.1.5(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0):
+    dependencies:
+      cookie: 1.0.2
+      next: 15.1.5(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      react: 19.0.0
 
   cross-spawn@7.0.6:
     dependencies:

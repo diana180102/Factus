@@ -1,14 +1,19 @@
+
 import { NextRequest, NextResponse } from "next/server";
+import { auth } from "./auth";
+
 // import { getToken } from "next-auth/jwt";
 
 export async function middleware(request:NextRequest){
 
-    const accessToken = request.cookies.get('accessToken');
+    
+    const session = await auth(); 
+    
 
     
     
 
-    if(!accessToken){
+    if(!session?.accessToken){
         return NextResponse.redirect(new URL('/', request.url))
     }
 

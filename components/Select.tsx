@@ -1,25 +1,23 @@
 
 import { poppins } from "@/ui/font";
+import React from "react";
 
-interface Option {
-  value: string;
-  label: string;
+// interface Option {
+//   value: string;
+//   label: string;
+// }
+
+interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement>{
+    children: React.ReactNode
 }
 
-interface SelectProps{
-    options: Option []
-}
-
-function Select({options }:SelectProps) {
+function Select({children, ...props}:SelectProps) {
     return (
         <select 
-            id="tributo" 
+            {...props} 
             className={`select ${poppins.className}`}>
-               {options.map((option:Option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
+             {children} 
+        
         </select>
     );
 }
