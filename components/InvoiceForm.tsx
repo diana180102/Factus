@@ -25,9 +25,11 @@ import { MethodPayment } from "@/types/methodPayment";
 import { PaymentType } from "@/types/paymentType";
 import { getPaymentType } from "@/services/paymentTypeService";
 import { getMethodPayment } from "@/services/methodPaymentService";
-import { FormDataType} from "@/types/invoice";
-import { createInvoice } from "@/services/createInvoice";
-import { BloomFilter } from "next/dist/shared/lib/bloom-filter";
+import { Bill, FormDataType} from "@/types/invoice";
+import { createInvoiceService } from "@/services/createInvoiceService";
+import { validateInvoiceService } from "@/services/validateInvoiceService";
+import Loading from "./Loading";
+
 
 
 export default function InvoiceForm() {
@@ -96,7 +98,13 @@ export default function InvoiceForm() {
 
   const [isRequired, setIsRequired] = useState<{ [key: string]: boolean }>({});
   const [showPopup, setShowPopup] = useState(false);
-
+  const [invoiceData, setInvoiceData] = useState<Bill>({
+    number: '',
+    qr:'',
+    cufe:'',
+    public_url:''
+  });
+  const [loading, setLoading] = useState(false);
  
 
 
@@ -108,9 +116,9 @@ export default function InvoiceForm() {
   useEffect(() => {
     const fetchDataInvoice = async () => {
       try {
-        const data = await getInvoiceType();
+        const result = await getInvoiceType()  as { data: InvoiceType[] };
 
-        setInvoiceType(data.data);
+        setInvoiceType(result.data);
       } catch (error) {
         console.error("Error fetching invoice types:", error);
       }
@@ -122,7 +130,7 @@ export default function InvoiceForm() {
   useEffect(() => {
     const fetchIdentityDocument = async () => {
       try {
-        const result = await getIdentityDocument();
+        const result = await getIdentityDocument() as { data:Document[]};
         setIdentityDocument(result.data);
       } catch (error) {
         console.error("Error fetching identity document: ", error);
@@ -134,7 +142,7 @@ export default function InvoiceForm() {
   useEffect(() => {
     const fetchOrganization = async () => {
       try {
-        const result = await getOrganization();
+        const result = await getOrganization() as { data: Organization[]};
         setOrganization(result.data);
       } catch (error) {
         console.error("Error fetching organization: ", error);
@@ -146,7 +154,7 @@ export default function InvoiceForm() {
   useEffect(() => {
     const fetchMunicios = async () => {
       try {
-        const result = await getMunicipios();
+        const result = await getMunicipios() as {data: Municipios[]};
         setMunicipios(result.data);
       } catch (error) {
         console.error("Error fetching municipios", error);
@@ -158,7 +166,7 @@ export default function InvoiceForm() {
   useEffect(() => {
     const fetchTributeClient = async () => {
       try {
-        const result = await getTributeClient();
+        const result = await getTributeClient() as {data: TributeClient[]};
 
         setTributeClient(result.data);
       } catch (error) {
@@ -171,8 +179,8 @@ export default function InvoiceForm() {
   useEffect(() => {
     const fetchStandard = async () => {
       try {
-        const result = await getStandard();
-        console.log(result);
+        const result = await getStandard() as {data: Standard[]};
+        
         setStandard(result.data);
       } catch (error) {
         console.error("Error fetching standard ", error);
@@ -184,7 +192,7 @@ export default function InvoiceForm() {
   useEffect(() => {
     const fetchMeasure = async () => {
       try {
-        const result = await getMeasure();
+        const result = await getMeasure() as {data:Measure[]};
         console.log(result);
         setMeasure(result.data);
       } catch (error) {
@@ -197,7 +205,7 @@ export default function InvoiceForm() {
   useEffect(() => {
     const fetchTributeProduct = async () => {
       try {
-        const result = await getTributeProduct();
+        const result = await getTributeProduct() as {data: TributeProduct[]};
 
         setTributeProduct(result.data);
       } catch (error) {
@@ -210,7 +218,7 @@ export default function InvoiceForm() {
   useEffect(() => {
     const fetchPaymentType = async () => {
       try {
-        const result = await getPaymentType();
+        const result = await getPaymentType() as {data: PaymentType[]};
 
         setPaymentType(result.data);
       } catch (error) {
@@ -223,7 +231,7 @@ export default function InvoiceForm() {
   useEffect(() => {
     const fetchMethodPayment = async () => {
       try {
-        const result = await getMethodPayment();
+        const result = await getMethodPayment() as {data: MethodPayment[]};
 
         setMethodPayment(result.data);
       } catch (error) {
@@ -307,13 +315,33 @@ export default function InvoiceForm() {
      };
 
      try {
-       const result = await createInvoice(body);
+       const result = await createInvoiceService(body);
        console.log(result);
-       if(result){
-         ;
-         setShowPopup(true);
+
+       const bill = result?.data.bill;
+       
+       if(bill?.number){
+         
+         const validation = await validateInvoiceService(bill.number);
+
+         if(validation){
+          setInvoiceData({
+            number: bill.number,
+            qr: bill.qr,
+            cufe: bill.cufe,
+            public_url: bill.public_url
+          });
+          setShowPopup(true);
+          setLoading(false);
+         }
+
+        
 
        }
+       setLoading(true);
+
+       setFormData(initialState);
+
      } catch (error) {
        console.error("Error creating invoice", error);
      }
@@ -325,6 +353,16 @@ export default function InvoiceForm() {
 
   return (
     <section className="">
+      {
+         showPopup && invoiceData  &&(
+            <div>
+              <p>{invoiceData.number}</p>
+              <p>{invoiceData.cufe}</p>
+            </div>
+         )
+      }
+
+     {loading && <Loading />}
       
       <div className="max-w-3xl px-4 py-8 mx-auto lg:py-16">
         <h1 className={`mb-8 text-2xl font-bold  ${poppins.className}`}>
