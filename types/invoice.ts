@@ -38,7 +38,7 @@ export type Item = {
 };
 
 export type FormDataType = {
-  numbering_range_id: number,
+  numbering_range_id: number;
   reference_code: string;
   observation: string;
   payment_form: string;
@@ -48,3 +48,10 @@ export type FormDataType = {
   customer: Customer;
   items: Item[];
 };
+
+export type Bill ={
+  number: string;
+  qr:string;
+  cufe:string;
+  public_url:string;
+}
