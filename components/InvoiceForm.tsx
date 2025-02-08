@@ -352,7 +352,7 @@ export default function InvoiceForm() {
 
 
   return (
-    <section className="">
+    <section className="flex flex-col items-center p-4  w-full">
       {
          showPopup && invoiceData  &&(
             <div>

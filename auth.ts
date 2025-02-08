@@ -7,6 +7,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import axios, { AxiosError } from 'axios';
 import qs from "qs";
 import type { JWT } from "next-auth/jwt";
+import { refreshAccessToken } from "./services/refreshTokenService";
 
 
 
@@ -45,22 +46,18 @@ export const authOptions: NextAuthOptions = {
             }
           );
           
-          const {access_token, refresh_token} = response.data as {access_token: string, refresh_token:string};
+          const {access_token, refresh_token, expires_in} = response.data as {access_token: string, refresh_token:string, expires_in:number};
 
           if(access_token){
             return {
               id: credentials.email, 
               access_token,
               refresh_token, 
+              expires_in: Date.now() + expires_in * 1000 ,
               email:credentials.email
             } as CustomUser;
           }
-
-
-          
-
-
-          return null;
+            return null;
         } catch (error) {
           if (error instanceof axios.AxiosError) {
             console.error(
@@ -83,20 +80,29 @@ export const authOptions: NextAuthOptions = {
        const users = user as unknown as CustomUser;
 
       if (user) {
-        // console.log("account", account)
+        
         console.log(user)
          token.accessToken = users.access_token;
          token.refreshToken = users.refresh_token;
-        
+         token.accessTokenExpires = users.expires_in;
+         
       }
+
+        if (typeof token.accessTokenExpires === 'number' && Date.now() > token.accessTokenExpires) {
+        console.log("El token ha caducado, renovando...");
+        token = await refreshAccessToken(token);
+        }
+      
+
+      
       return token;
     },
 
     async session({ session, token }: { session: Session; token: JWT }) {
-      // console.log("token", token)
+      
       session.accessToken = token.accessToken as string;
       session.refreshToken = token.refreshToken as string;
-     
+      session.expires = token.accessTokenExpires as string;
       return session;
     },
   },
@@ -117,5 +123,6 @@ export async function auth() {
 interface CustomUser extends User {
   access_token: string;
   refresh_token:string;
+  expires_in:number;
   email: string;
 }
