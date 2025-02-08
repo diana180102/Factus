@@ -17,7 +17,7 @@ export default async function DashboardLayaout({children}:Readonly<{children:Rea
          <div className="flex flex-row w-full min-w-[600px] min-h-screen">
          <Aside></Aside>
          <div className=" flex flex-col items-center p-4  w-full ">
-
+         
          {children}
          </div>
       </div>
