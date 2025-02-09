@@ -88,14 +88,17 @@ export const authOptions: NextAuthOptions = {
          
       }
 
-        if (typeof token.accessTokenExpires === 'number' && Date.now() > token.accessTokenExpires) {
-        console.log("El token ha caducado, renovando...");
-        token = await refreshAccessToken(token);
+       
+
+        if (typeof token.accessTokenExpires === 'number' && Date.now() > token.accessTokenExpires ) {
+          console.log("El token ha caducado, renovando...");
+          token = await refreshAccessToken(token);
+          
         }
       
 
       
-      return token;
+      return token ;
     },
 
     async session({ session, token }: { session: Session; token: JWT }) {

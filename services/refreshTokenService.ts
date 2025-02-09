@@ -1,5 +1,6 @@
 import axios, { AxiosError } from "axios";
 import { JWT } from "next-auth/jwt";
+import qs from "qs";
 
 
 export async function refreshAccessToken(token:JWT) {
@@ -21,17 +22,32 @@ export async function refreshAccessToken(token:JWT) {
     );
 
     const { access_token, refresh_token } = response.data as { access_token: string; refresh_token: string };
-    return {
-      ...token,
-      accessToken: access_token,
-      refreshToken: refresh_token ?? token.refreshToken, // use existing refresh token if new one is not returned
-      accessTokenExpires: Date.now() + 3600 * 1000, // 1 hour
-    };
+    
+
+     
+       return {
+         ...token,
+         accessToken: access_token,
+         refreshToken: refresh_token ?? token.refreshToken,
+         accessTokenExpires: Date.now() + 3600 * 1000,
+       };
+     
+     
+   
+    
+    
   } catch (error) {
-    console.error("Error al renovar el token de acceso: ", (error as AxiosError).response?.data || (error as AxiosError).message);
-    return {
-      ...token,
-      error: "ErrorRefreshAccessToken",
-    };
+
+    if (!token || !token.refreshToken) {
+      console.error(
+        "No hay refresh token disponible. Usuario no ha iniciado sesión.", (error as AxiosError).response?.data || (error as AxiosError).message);
+      
+      return {
+        ...token,
+        error: "NoRefreshTokenAvailable",
+      };
+    }
+
+    
   }
 }

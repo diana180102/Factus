@@ -25,15 +25,13 @@ import { MethodPayment } from "@/types/methodPayment";
 import { PaymentType } from "@/types/paymentType";
 import { getPaymentType } from "@/services/paymentTypeService";
 import { getMethodPayment } from "@/services/methodPaymentService";
-import { Bill, FormDataType} from "@/types/invoice";
+import { Bill, FormDataType } from "@/types/invoice";
 import { createInvoiceService } from "@/services/createInvoiceService";
-import { validateInvoiceService } from "@/services/validateInvoiceService";
+
+import { Trash2 } from "lucide-react";
 import Loading from "./Loading";
 
-
-
 export default function InvoiceForm() {
-
   const [invoiceType, setInvoiceType] = useState<InvoiceType[]>([]);
   const [identityDocument, setIdentityDocument] = useState<Document[]>([]);
   const [organization, setOrganization] = useState<Organization[]>([]);
@@ -44,43 +42,37 @@ export default function InvoiceForm() {
   const [measure, setMeasure] = useState<Measure[]>([]);
   const [methodPayment, setMethodPayment] = useState<MethodPayment[]>([]);
   const [paymentType, setPaymentType] = useState<PaymentType[]>([]);
-  
-  
+
   const initialState: FormDataType = {
-  numbering_range_id: 8,  
-  reference_code: "",
-  observation: "",
-  payment_form: "1",
-  payment_due_date: "2024-12-30",
-  payment_method_code: "10",
-  billing_period: {
-    start_date: "2024-01-10",
-    start_time: "00:00:00",
-    end_date: "2024-02-09",
-    end_time: "23:59:59",
-  },
-  customer: {
-    identification: "",
-    dv: "",
-    company:"",
-    trade_name:"",
-    names: "",
-    address: "",
-    email: "",
-    phone: "",
-    legal_organization_id: "",
-    tribute_id: "",
-    identification_document_id: "",
-    municipality_id: "",
-  },
-  items: [],
-  
- 
- 
-  
-  
+    numbering_range_id: 8,
+    reference_code: "",
+    observation: "",
+    payment_form: "1",
+    payment_due_date: "2024-12-30",
+    payment_method_code: "10",
+    billing_period: {
+      start_date: "2024-01-10",
+      start_time: "00:00:00",
+      end_date: "2024-02-09",
+      end_time: "23:59:59",
+    },
+    customer: {
+      identification: "",
+      dv: "",
+      company: "",
+      trade_name: "",
+      names: "",
+      address: "",
+      email: "",
+      phone: "",
+      legal_organization_id: "",
+      tribute_id: "",
+      identification_document_id: "",
+      municipality_id: "",
+    },
+    items: [],
   };
-  
+
   const [formData, setFormData] = useState<FormDataType>(initialState);
   const [newItem, setNewItem] = useState({
     code_reference: "",
@@ -89,7 +81,7 @@ export default function InvoiceForm() {
     discount_rate: 0,
     price: 0,
     tax_rate: "0.00",
-    unit_measure_id: 0,
+    unit_measure_id: 70,
     standard_code_id: 0,
     is_excluded: 0,
     tribute_id: "",
@@ -98,25 +90,19 @@ export default function InvoiceForm() {
 
   const [isRequired, setIsRequired] = useState<{ [key: string]: boolean }>({});
   const [showPopup, setShowPopup] = useState(false);
-  const [invoiceData, setInvoiceData] = useState<Bill>({
-    number: '',
-    qr:'',
-    cufe:'',
-    public_url:''
+  const [invoiceData, setInvoiceData] = useState<Bill | null>({
+    number: "",
+    qr: "",
+    cufe: "",
+    public_url: "",
   });
   const [loading, setLoading] = useState(false);
- 
-
-
-   
-  
- 
-  
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchDataInvoice = async () => {
       try {
-        const result = await getInvoiceType()  as { data: InvoiceType[] };
+        const result = (await getInvoiceType()) as { data: InvoiceType[] };
 
         setInvoiceType(result.data);
       } catch (error) {
@@ -130,7 +116,7 @@ export default function InvoiceForm() {
   useEffect(() => {
     const fetchIdentityDocument = async () => {
       try {
-        const result = await getIdentityDocument() as { data:Document[]};
+        const result = (await getIdentityDocument()) as { data: Document[] };
         setIdentityDocument(result.data);
       } catch (error) {
         console.error("Error fetching identity document: ", error);
@@ -142,7 +128,7 @@ export default function InvoiceForm() {
   useEffect(() => {
     const fetchOrganization = async () => {
       try {
-        const result = await getOrganization() as { data: Organization[]};
+        const result = (await getOrganization()) as { data: Organization[] };
         setOrganization(result.data);
       } catch (error) {
         console.error("Error fetching organization: ", error);
@@ -154,7 +140,7 @@ export default function InvoiceForm() {
   useEffect(() => {
     const fetchMunicios = async () => {
       try {
-        const result = await getMunicipios() as {data: Municipios[]};
+        const result = (await getMunicipios()) as { data: Municipios[] };
         setMunicipios(result.data);
       } catch (error) {
         console.error("Error fetching municipios", error);
@@ -166,7 +152,7 @@ export default function InvoiceForm() {
   useEffect(() => {
     const fetchTributeClient = async () => {
       try {
-        const result = await getTributeClient() as {data: TributeClient[]};
+        const result = (await getTributeClient()) as { data: TributeClient[] };
 
         setTributeClient(result.data);
       } catch (error) {
@@ -179,8 +165,8 @@ export default function InvoiceForm() {
   useEffect(() => {
     const fetchStandard = async () => {
       try {
-        const result = await getStandard() as {data: Standard[]};
-        
+        const result = (await getStandard()) as { data: Standard[] };
+
         setStandard(result.data);
       } catch (error) {
         console.error("Error fetching standard ", error);
@@ -192,7 +178,7 @@ export default function InvoiceForm() {
   useEffect(() => {
     const fetchMeasure = async () => {
       try {
-        const result = await getMeasure() as {data:Measure[]};
+        const result = (await getMeasure()) as { data: Measure[] };
         console.log(result);
         setMeasure(result.data);
       } catch (error) {
@@ -205,7 +191,9 @@ export default function InvoiceForm() {
   useEffect(() => {
     const fetchTributeProduct = async () => {
       try {
-        const result = await getTributeProduct() as {data: TributeProduct[]};
+        const result = (await getTributeProduct()) as {
+          data: TributeProduct[];
+        };
 
         setTributeProduct(result.data);
       } catch (error) {
@@ -218,7 +206,7 @@ export default function InvoiceForm() {
   useEffect(() => {
     const fetchPaymentType = async () => {
       try {
-        const result = await getPaymentType() as {data: PaymentType[]};
+        const result = (await getPaymentType()) as { data: PaymentType[] };
 
         setPaymentType(result.data);
       } catch (error) {
@@ -231,7 +219,7 @@ export default function InvoiceForm() {
   useEffect(() => {
     const fetchMethodPayment = async () => {
       try {
-        const result = await getMethodPayment() as {data: MethodPayment[]};
+        const result = (await getMethodPayment()) as { data: MethodPayment[] };
 
         setMethodPayment(result.data);
       } catch (error) {
@@ -240,25 +228,26 @@ export default function InvoiceForm() {
     };
     fetchMethodPayment();
   }, []);
-  
-   const addItem = () =>{
-    setFormData((prev) =>({
-      ...prev,
-      items:[...prev.items, {
-        ...newItem,
-         quantity: Number(newItem.quantity),
-         discount_rate: Number(newItem.discount_rate), 
-         price: Number(newItem.price),
-         unit_measure_id: Number(newItem.unit_measure_id),
-         standard_code_id: Number(newItem.standard_code_id),
-         tribute_id: Number(newItem.tribute_id),
-         is_excluded: Number(newItem.is_excluded),
-         
 
-      }]
+  const addItem = () => {
+    setFormData((prev) => ({
+      ...prev,
+      items: [
+        ...prev.items,
+        {
+          ...newItem,
+          quantity: Number(newItem.quantity),
+          discount_rate: Number(newItem.discount_rate),
+          price: Number(newItem.price),
+          unit_measure_id: Number(newItem.unit_measure_id),
+          standard_code_id: Number(newItem.standard_code_id),
+          tribute_id: Number(newItem.tribute_id),
+          is_excluded: Number(newItem.is_excluded),
+        },
+      ],
     }));
 
-     setNewItem({
+    setNewItem({
       code_reference: "",
       name: "",
       quantity: 1,
@@ -271,99 +260,99 @@ export default function InvoiceForm() {
       tribute_id: "",
       withholding_taxes: [],
     });
-
-    
   };
- 
- //  Values of Products
-  const handleNewItemChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+
+  //  Values of Products
+  const handleNewItemChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setNewItem((prev) => ({
       ...prev,
       [name]: value,
-     }));
-   };
+    }));
+  };
 
-  
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     e.preventDefault();
-    
-    const {name, value} = e.target;
 
-    setFormData((prev)=>({
+    const { name, value } = e.target;
+
+    setFormData((prev) => ({
       ...prev,
-       customer:{
+      customer: {
         ...prev.customer,
-        [name]:value
-       },
-      [name]:value,
+        [name]: value,
+      },
+      [name]: value,
     }));
 
     //Campos requeridos
-    setIsRequired(prev =>({
+    setIsRequired((prev) => ({
       ...prev,
-      [name]: value.trim() === '',
+      [name]: value.trim() === "",
     }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-     const body = {
+    setLoading(true);
+    setShowPopup(false);
+    setError(null);
+    setInvoiceData(null);
+
+    const body = {
       ...formData,
-      numbering_range_id: Number(formData.numbering_range_id)
-     };
+      numbering_range_id: Number(formData.numbering_range_id),
+    };
 
-     try {
-       const result = await createInvoiceService(body);
-       console.log(result);
+    try {
+      const result = await createInvoiceService(body);
+      console.log(result);
 
-       const bill = result?.data.bill;
-       
-       if(bill?.number){
-         
-         const validation = await validateInvoiceService(bill.number);
+      if (!result) {
+        throw new Error("Error al crear la factura");
+      }
 
-         if(validation){
-          setInvoiceData({
-            number: bill.number,
-            qr: bill.qr,
-            cufe: bill.cufe,
-            public_url: bill.public_url
-          });
-          setShowPopup(true);
-          setLoading(false);
-         }
+      const bill = result?.data.bill;
 
-        
+      setInvoiceData({
+        number: bill.number,
+        qr: bill.qr,
+        cufe: bill.cufe,
+        public_url: bill.public_url,
+      });
 
-       }
-       setLoading(true);
+      setShowPopup(true);
 
-       setFormData(initialState);
+      setFormData(initialState);
+    } catch (error) {
+      if (error instanceof Error) {
+        setError(error.message || "Ocurrió un error inesperado");
+        console.error("Error creating invoice", error.message);
 
-     } catch (error) {
-       console.error("Error creating invoice", error);
-     }
+        setShowPopup(true);
+      }
+    } finally {
+      setLoading(false);
+    }
 
-     console.log(body);
-  }
+    console.log(body);
+  };
 
-
+  const deleteItem = (item: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      items: prev.items.filter((i) => i.code_reference !== item.toString()),
+    }));
+  };
 
   return (
     <section className="flex flex-col items-center p-4  w-full">
-      {
-         showPopup && invoiceData  &&(
-            <div>
-              <p>{invoiceData.number}</p>
-              <p>{invoiceData.cufe}</p>
-            </div>
-         )
-      }
-
-     {loading && <Loading />}
-      
+    
       <div className="max-w-3xl px-4 py-8 mx-auto lg:py-16">
         <h1 className={`mb-8 text-2xl font-bold  ${poppins.className}`}>
           Crear Factura
@@ -403,12 +392,13 @@ export default function InvoiceForm() {
                   onChange={handleChange}
                   value={formData.reference_code}
                   name="reference_code"
-                  required = {isRequired.reference_code}
+                  required={isRequired.reference_code}
                 ></Input>
-                  {
-                    isRequired.reference_code && 
-                    <span className="text-purple-800 text-xs ml-2">field required</span> 
-                  }
+                {isRequired.reference_code && (
+                  <span className="text-purple-800 text-xs ml-2">
+                    field required
+                  </span>
+                )}
               </div>
             </div>
 
@@ -441,7 +431,9 @@ export default function InvoiceForm() {
                   value={formData.customer.identification_document_id}
                   name="identification_document_id"
                 >
-                  <option value="">Seleccione identificación</option>
+                  <option value="" disabled>
+                    Seleccione identificación
+                  </option>
                   {identityDocument.map((document: Document) => (
                     <option key={document.id} value={document.id}>
                       {document.name}
@@ -458,12 +450,13 @@ export default function InvoiceForm() {
                   onChange={handleChange}
                   value={formData.customer.identification}
                   name="identification"
-                  required = {isRequired.identification}
+                  required={isRequired.identification}
                 ></Input>
-                 {
-                    isRequired.identification && 
-                    <span className="text-purple-800 text-xs ml-2">field required</span> 
-                  }
+                {isRequired.identification && (
+                  <span className="text-purple-800 text-xs ml-2">
+                    field required
+                  </span>
+                )}
               </div>
               <div className="w-full">
                 <Label forHTML="names" styles="">
@@ -488,7 +481,9 @@ export default function InvoiceForm() {
                   value={formData.customer.legal_organization_id}
                   onChange={handleChange}
                 >
-                  <option value="">Seleccione organización</option>
+                  <option value="" disabled>
+                    Seleccione organización
+                  </option>
                   {organization.map((organization: Organization) => (
                     <option key={organization.id} value={organization.id}>
                       {organization.name}
@@ -507,10 +502,11 @@ export default function InvoiceForm() {
                   onChange={handleChange}
                   required={formData.customer.legal_organization_id === "1"}
                 ></Input>
-                  {
-                    formData.customer.legal_organization_id === "1" ? 
-                    <span className="text-red-400 text-xs">*field required</span> : <></>
-                  }
+                {formData.customer.legal_organization_id === "1" ? (
+                  <span className="text-red-400 text-xs">*field required</span>
+                ) : (
+                  <></>
+                )}
               </div>
             </div>
 
@@ -542,7 +538,9 @@ export default function InvoiceForm() {
                   Municipio
                 </Label>
                 <Select name="municipality_id" onChange={handleChange}>
-                  <option value="">Seleccione municipio</option>
+                  <option value="" disabled>
+                    Seleccione municipio
+                  </option>
                   {municipios.map((municipio: Municipios) => (
                     <option key={municipio.code} value={municipio.id}>
                       {municipio.name}
@@ -558,7 +556,14 @@ export default function InvoiceForm() {
                   ¿Aplica IVA?
                 </Label>
 
-                <Select name="tribute_id" onChange={handleChange}>
+                <Select
+                  name="tribute_id"
+                  onChange={handleChange}
+                  value={formData.customer.tribute_id}
+                >
+                  <option value="" disabled>
+                    Seleccione una opción
+                  </option>
                   {tributeClient.map((tribute: TributeClient) => (
                     <option key={tribute.id} value={tribute.id}>
                       {tribute.name}
@@ -570,11 +575,19 @@ export default function InvoiceForm() {
                 <Label forHTML="dv" styles="">
                   Número de verificación de Cliente
                 </Label>
-                <Input type="text" name="dv" onChange={handleChange} required={formData.customer.identification_document_id === "6"}></Input>
-                {
-                    formData.customer.identification_document_id === "6" ? 
-                    <span className="text-red-400 text-xs">*field required</span> : <></>
+                <Input
+                  type="text"
+                  name="dv"
+                  onChange={handleChange}
+                  required={
+                    formData.customer.identification_document_id === "6"
                   }
+                ></Input>
+                {formData.customer.identification_document_id === "6" ? (
+                  <span className="text-red-400 text-xs">*field required</span>
+                ) : (
+                  <></>
+                )}
               </div>
             </div>
           </div>
@@ -589,7 +602,7 @@ export default function InvoiceForm() {
                 Productos
               </h2>
               <button
-               type="button"
+                type="button"
                 onClick={addItem}
                 className="text-white bg-gradient-to-r bg-[#180636] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
               >
@@ -606,13 +619,13 @@ export default function InvoiceForm() {
                   name="code_reference"
                   value={newItem.code_reference}
                   onChange={handleNewItemChange}
-                  required = {isRequired.code_reference}
+                  required={isRequired.code_reference}
                 ></Input>
-                 {
-                    isRequired.code_reference && 
-                    <span className="text-purple-800 text-xs ml-2">field required</span> 
-                  }
-                
+                {isRequired.code_reference && (
+                  <span className="text-purple-800 text-xs ml-2">
+                    field required
+                  </span>
+                )}
               </div>
               <div>
                 <Label forHTML="name" styles="">
@@ -622,12 +635,13 @@ export default function InvoiceForm() {
                   name="name"
                   value={newItem.name}
                   onChange={handleNewItemChange}
-                  required = {isRequired.name}
+                  required={isRequired.name}
                 ></Input>
-                {
-                    isRequired.name && 
-                    <span className="text-purple-800 text-xs ml-2">field required</span> 
-                  }
+                {isRequired.name && (
+                  <span className="text-purple-800 text-xs ml-2">
+                    field required
+                  </span>
+                )}
               </div>
               <div>
                 <Label forHTML="quantity" styles="">
@@ -650,12 +664,13 @@ export default function InvoiceForm() {
                   name="price"
                   value={newItem.price}
                   onChange={handleNewItemChange}
-                  required = {isRequired.price}
+                  required={isRequired.price}
                 ></Input>
-                {
-                    isRequired.price && 
-                    <span className="text-purple-800 text-xs ml-2">field required</span> 
-                  }
+                {isRequired.price && (
+                  <span className="text-purple-800 text-xs ml-2">
+                    field required
+                  </span>
+                )}
               </div>
               <div>
                 <Label forHTML="discount_rate" styles="">
@@ -677,17 +692,20 @@ export default function InvoiceForm() {
                   onChange={handleNewItemChange}
                   required={isRequired.standard_code_id}
                 >
-                  <option value="">Seleccione un estandar</option>
+                  <option value="" disabled>
+                    Seleccione un estandar
+                  </option>
                   {standard.map((standard: Standard) => (
                     <option key={standard.id} value={standard.id}>
                       {standard.name}
                     </option>
                   ))}
                 </Select>
-                {
-                    isRequired.reference_code && 
-                    <span className="text-purple-800 text-xs ml-2">field required</span> 
-                  }
+                {isRequired.reference_code && (
+                  <span className="text-purple-800 text-xs ml-2">
+                    field required
+                  </span>
+                )}
               </div>
             </div>
 
@@ -701,9 +719,11 @@ export default function InvoiceForm() {
                   value={newItem.unit_measure_id}
                   onChange={handleNewItemChange}
                 >
-                  <option value="">Seleccione una medida</option>
+                  <option value="" disabled>
+                    Seleccione una medida
+                  </option>
                   {measure.map((measure: Measure) => (
-                    <option key={measure.id} value={measure.code}>
+                    <option key={measure.id} value={measure.id}>
                       {measure.name}
                     </option>
                   ))}
@@ -736,7 +756,9 @@ export default function InvoiceForm() {
                   value={newItem.tribute_id}
                   onChange={handleNewItemChange}
                 >
-                  <option value="">Seleccione el tributo</option>
+                  <option value="" disabled>
+                    Seleccione el tributo
+                  </option>
                   {tributeProduct.map((tributo: TributeProduct) => (
                     <option key={tributo.id} value={tributo.id}>
                       {tributo.name}
@@ -767,7 +789,7 @@ export default function InvoiceForm() {
             </h2>
 
             <div className="relative overflow-x-auto rounded-md">
-              <table className="w-full text-sm text-left  rtl:text-right text-gray-500 dark:text-gray-400">
+              <table className="w-full text-sm text-left bg-[#d1cfe0]  text-gray-500 dark:text-gray-400">
                 <thead
                   className={`text-xs text-white uppercase bg-[#12093a] dark:bg-gray-700 dark:text-gray-400 ${poppins.className}`}
                 >
@@ -784,31 +806,49 @@ export default function InvoiceForm() {
                     <th scope="col" className="px-6 py-3">
                       Descuento
                     </th>
+                    <th scope="col" className="px-6 py-3">
+                      Action
+                    </th>
                   </tr>
                 </thead>
-                <tbody>
-                
-                  {formData.items.map((item) => (
-                    <tr className={`bg-[#edebf5] border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 ${poppins.className} text-[#0b063a]`} key={item.code_reference}>
-                      <th
-                        scope="row"
-                        className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                      > {item.name}</th>
-                      <td className="px-6 py-4">{item.quantity}
-
-                      </td>
-                      <td className="px-6 py-4">{item.price}
-                        
-                      </td>
-                      <td className="px-6 py-4">{item.discount_rate} %
-                        
+                <tbody className=" w-full ">
+                  {formData.items.length > 0 &&
+                    formData.items.map((item) => (
+                      <tr
+                        className={`bg-[#edebf5] border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 ${poppins.className} text-[#0b063a]`}
+                        key={Date.now()}
+                      >
+                        <th
+                          scope="row"
+                          className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                        >
+                          {" "}
+                          {item.name}
+                        </th>
+                        <td className="px-6 py-4">{item.quantity}</td>
+                        <td className="px-6 py-4">{item.price}</td>
+                        <td className="px-6 py-4">{item.discount_rate} %</td>
+                        <td className="px-6 py-4">
+                          <button
+                            type="button"
+                            onClick={() =>
+                              deleteItem(Number(item.code_reference))
+                            }
+                          >
+                            <Trash2 />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  {formData.items.length <= 0 && (
+                    <tr className="w-full">
+                      <td className="p-4 " colSpan={5}>
+                        <p className="text-center">No hay productos</p>
                       </td>
                     </tr>
-                    
-                  ))}
+                  )}
                 </tbody>
               </table>
-               
             </div>
           </div>
 
@@ -831,6 +871,9 @@ export default function InvoiceForm() {
                   value={formData.payment_form}
                   onChange={handleChange}
                 >
+                  <option value="" disabled>
+                    Seleccione el tributo
+                  </option>
                   {paymentType.map((pay: PaymentType) => (
                     <option key={pay.id} value={pay.id}>
                       {pay.name}
@@ -847,6 +890,9 @@ export default function InvoiceForm() {
                   value={formData.payment_method_code}
                   onChange={handleChange}
                 >
+                  <option value="" disabled>
+                    Seleccione el tributo
+                  </option>
                   {methodPayment.map((pay: MethodPayment) => (
                     <option key={pay.id} value={pay.id}>
                       {pay.name}
@@ -854,19 +900,32 @@ export default function InvoiceForm() {
                   ))}
                 </Select>
               </div>
-              
             </div>
           </div>
-          
+
           <button
             type="submit"
             className="self-end text-white bg-gradient-to-r bg-[#180636] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
           >
             crear
           </button>
-          
         </form>
       </div>
+        {loading && <Loading></Loading>}
+
+      {showPopup && error && (
+        <div className="bg-red-500 text-white p-4 rounded">
+          <h3>{error}</h3>
+        </div>
+      )}
+
+      {showPopup && invoiceData && !error && (
+        <div className="bg-green-500 text-white p-4 rounded">
+          <h3>Factura Validada y creada exitosamente!</h3>
+          <p>{invoiceData.number}</p>
+          <p>{invoiceData.cufe}</p>
+        </div>
+      )}
     </section>
   );
 }
