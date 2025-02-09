@@ -3,7 +3,7 @@ import { getSession } from "next-auth/react";
 
 
 
-const endpoint = `https://api-sandbox.factus.com.co/v1/bills/show/`;
+const endpoint = `https://api-sandbox.factus.com.co/v1/bills/send`;
 
 export async  function validateInvoiceService (number:string){
 
@@ -11,12 +11,7 @@ export async  function validateInvoiceService (number:string){
 
       const session = await getSession();
    
-      const res = await axios.post(`${endpoint}/${number}`, {
-            headers:{
-                Authorization: `Bearer ${session?.accessToken}`
-            },
-            
-      });
+      const res = await axios.post(`${endpoint}/${number}`);
 
       return res.data;
     
