@@ -82,7 +82,7 @@ export default function InvoiceForm() {
     price: 0,
     tax_rate: "0.00",
     unit_measure_id: 70,
-    standard_code_id: 0,
+    standard_code_id: 1,
     is_excluded: 0,
     tribute_id: "",
     withholding_taxes: [],
@@ -179,7 +179,7 @@ export default function InvoiceForm() {
     const fetchMeasure = async () => {
       try {
         const result = (await getMeasure()) as { data: Measure[] };
-        console.log(result);
+        
         setMeasure(result.data);
       } catch (error) {
         console.error("Error fetching measure ", error);
@@ -228,7 +228,8 @@ export default function InvoiceForm() {
     };
     fetchMethodPayment();
   }, []);
-
+  
+  //add new products
   const addItem = () => {
     setFormData((prev) => ({
       ...prev,
@@ -247,6 +248,8 @@ export default function InvoiceForm() {
       ],
     }));
 
+    console.log(newItem);
+
     setNewItem({
       code_reference: "",
       name: "",
@@ -260,6 +263,8 @@ export default function InvoiceForm() {
       tribute_id: "",
       withholding_taxes: [],
     });
+
+    
   };
 
   //  Values of Products
@@ -342,13 +347,17 @@ export default function InvoiceForm() {
 
     console.log(body);
   };
-
-  const deleteItem = (item: number) => {
+   
+  //Delete products 
+  const deleteItem = (item: string) => {
     setFormData((prev) => ({
       ...prev,
-      items: prev.items.filter((i) => i.code_reference !== item.toString()),
+      items: prev.items.filter((i) => i.code_reference !== item),
     }));
   };
+
+
+
 
   return (
     <section className="flex flex-col items-center p-4  w-full">
@@ -516,7 +525,7 @@ export default function InvoiceForm() {
                   Email
                 </Label>
                 <Input
-                  type="text"
+                  type="email"
                   name="email"
                   onChange={handleChange}
                   value={formData.customer.email}
@@ -816,7 +825,7 @@ export default function InvoiceForm() {
                     formData.items.map((item) => (
                       <tr
                         className={`bg-[#edebf5] border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 ${poppins.className} text-[#0b063a]`}
-                        key={Date.now()}
+                        key={item.code_reference}
                       >
                         <th
                           scope="row"
@@ -832,7 +841,7 @@ export default function InvoiceForm() {
                           <button
                             type="button"
                             onClick={() =>
-                              deleteItem(Number(item.code_reference))
+                              deleteItem(item.code_reference)
                             }
                           >
                             <Trash2 />

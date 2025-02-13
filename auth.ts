@@ -7,7 +7,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import axios, { AxiosError } from 'axios';
 import qs from "qs";
 import type { JWT } from "next-auth/jwt";
-import { refreshAccessToken } from "./services/refreshTokenService";
+// import { refreshAccessToken } from "./services/refreshTokenService";
 
 
 
@@ -90,11 +90,11 @@ export const authOptions: NextAuthOptions = {
 
        
 
-        if (typeof token.accessTokenExpires === 'number' && Date.now() > token.accessTokenExpires ) {
-          console.log("El token ha caducado, renovando...");
-          token = await refreshAccessToken(token);
+        // if (typeof token.accessTokenExpires === 'number' && Date.now() > token.accessTokenExpires ) {
+        //   console.log("El token ha caducado, renovando...");
+        //   token = await refreshAccessToken(token);
           
-        }
+        // }
       
 
       
