@@ -87,7 +87,7 @@ Agrega en .env.local tu key secret de next
 
 ## Demo
 
-[![Ver video](https://cdn-icons-png.flaticon.com/512/2468/2468825.png)](https://youtu.be/hGUdrONerUw)
+[![Ver video](https://w7.pngwing.com/pngs/408/627/png-transparent-play-button-gray-video-player-button-thumbnail.png)](https://youtu.be/hGUdrONerUw)
 
 
 
