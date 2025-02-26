@@ -87,7 +87,7 @@ Agrega en .env.local tu key secret de next
 
 ## Demo
 
-[![Ver video](https://w7.pngwing.com/pngs/408/627/png-transparent-play-button-gray-video-player-button-thumbnail.png)](https://youtu.be/hGUdrONerUw)
+[![Ver video]()](https://youtu.be/hGUdrONerUw)
 
 
 
